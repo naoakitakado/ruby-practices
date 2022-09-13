@@ -9,39 +9,33 @@ options = ARGV.getopts('y:m:')
 year = options["y"].to_i
 month = options["m"].to_i
 
-if year == 0
-  year = Date.today.year
-end
-if month == 0
-  month = Date.today.month
-end
+year = Date.today.year if year.zero?
+month = Date.today.month if month.zero?
 
+last_date = Date.new(year, month, -1)
+first_date = Date.new(year, month, 1)
 
-month_end_date = Date.new(year, month, -1)
-month_end_day = month_end_date.day
-    
-day = 1
-saturday = 6
-week = ["  ","  ","  ","  ","  ","  ","  "]
+SATURDAY = 6
+ONEWEEK = 7
+LASTDATE = last_date.day
+week = []
 
-print "     #{month}月 #{year}    \n"
-print "日 月 火 水 木 金 土\n"
+puts "     #{month}月 #{year}    "
+puts "日 月 火 水 木 金 土"
     
-while day <= month_end_day do
-  day_date = Date.new(year, month, day)
-  one_day =day_date.day
-  one_day_of_week = day_date.wday #今日の日付の曜日
-    
-  one_day_shaped = sprintf("%2s", one_day)
-  week[one_day_of_week] = one_day_shaped
-  
-  if one_day_of_week == saturday
+(first_date..last_date).each do |date|
+  one_day = date.day
+  one_day_of_week = date.wday
+  one_day_shaped = one_day.to_s.rjust(2)
+  week << one_day_shaped
+
+  if one_day_of_week == SATURDAY
+    if week.length != ONEWEEK
+      blank_times = ONEWEEK - week.length
+      blank_times.times{ week.unshift("  ") }
+    end
     puts week.join(" ")
-    week = ["  ","  ","  ","  ","  ","  ","  "]
+    week = []
   end
-    
-  if day == month_end_day
-    puts week.join(" ")
-  end 
-    day = day + 1
+  puts week.join(" ") if one_day == LASTDATE
 end
