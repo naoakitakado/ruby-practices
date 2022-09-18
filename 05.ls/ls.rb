@@ -4,7 +4,7 @@
 def lineoutput(row_number, items)
   line = lineshaping(row_number, items)
   line.each do |item|
-    puts item.join('  ')
+    puts item.join('   ')
   end
 end
 
@@ -17,7 +17,7 @@ def lineshaping(row_number, items)
     test = items_cut.flatten.map do |o|
       o.tr(' ', '')
     end
-    puts test.join('    ')
+    puts test.join('   ')
     exit
   else
     items_cut.each do |a|
