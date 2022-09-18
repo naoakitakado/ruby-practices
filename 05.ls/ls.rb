@@ -1,26 +1,41 @@
 # !/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'rubocop'
-
-def lsprocess(row, date)
-  swap_rows_and_columns = dateshaping(row, date)
-  swap_rows_and_columns.each do |x|
-    puts x.join('  ')
+def lineoutput(row_number, items)
+  line = lineshaping(row_number, items)
+  line.each do |item|
+    puts item.join('  ')
   end
 end
 
-def dateshaping(row_number, before_date)
-  ascending_order_current_file_or_directory = before_date.sort
-  ascending_order_current_file_or_directory_array = ascending_order_current_file_or_directory.each_slice(row_number).to_a
+def lineshaping(row_number, items)
+  ascending_items = items.sort
+  items_cut = ascending_items.each_slice(row_number).to_a
+  max = items_cut.max_by(&:size).size
 
-  max = ascending_order_current_file_or_directory_array.max_by(&:size).size
-  ascending_order_current_file_or_directory_array.each do |a|
-    a << '' while a.size < max
+  if items_cut.count == 1
+    test = items_cut.flatten.map do |o|
+      o.tr(' ', '')
+    end
+    puts test.join('    ')
+    exit
+  else
+    items_cut.each do |a|
+      a << '' while a.size < max
+    end
+    items_cut.transpose
   end
-  ascending_order_current_file_or_directory_array.transpose
 end
 
-display_row = 3
-current_file_or_directory = Dir.glob('*')
-lsprocess(display_row, current_file_or_directory)
+max = 0
+DISPLAY_ROW_NUMBER = 3
+
+dir_items = Dir.glob('*')
+
+dir_items.each do |item|
+  max = item.size if item.size > max
+end
+
+items = dir_items.map { |item| item.ljust(max) }
+
+lineoutput(DISPLAY_ROW_NUMBER, items)
