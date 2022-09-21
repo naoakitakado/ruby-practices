@@ -1,6 +1,16 @@
 # !/usr/bin/env ruby
 # frozen_string_literal: true
 
+def rowcalculation(items, display_row_number)
+  row_number = items.length / display_row_number
+  row_number + 1 unless (items.length % display_row_number).zero?
+end
+
+def fileshaping(dir_items)
+  file_word_count = dir_items.map(&:length)
+  dir_items.map { |item| item.ljust(file_word_count.max) }
+end
+
 def lineoutput(row_number, items)
   line = lineshaping(row_number, items)
   line.each do |item|
@@ -17,18 +27,8 @@ def lineshaping(row_number, items)
   items_cut.transpose
 end
 
-max = 0
 DISPLAY_ROW_NUMBER = 3
-
 dir_items = Dir.glob('*')
-
-dir_items.each do |item|
-  max = item.size if item.size > max
-end
-
-items = dir_items.map { |item| item.ljust(max) }
-
-row_number = items.length / DISPLAY_ROW_NUMBER
-row_number += 1 unless (items.length % DISPLAY_ROW_NUMBER).zero?
-
+items = fileshaping(dir_items)
+row_number = rowcalculation(items, DISPLAY_ROW_NUMBER)
 lineoutput(row_number, items)
