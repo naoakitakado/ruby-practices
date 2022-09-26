@@ -1,6 +1,13 @@
 # !/usr/bin/env ruby
 # frozen_string_literal: true
 
+def dirsearch
+  option = ARGV
+  option = [] if ARGV == 'nil'
+  return Dir.glob('**/*', File::FNM_DOTMATCH) if option.include?('-a')
+  return Dir.glob('*') if option.empty?
+end
+
 def rowcalculation(items, display_row_number)
   row_number = items.length / display_row_number
   row_number + 1 unless (items.length % display_row_number).zero?
@@ -28,7 +35,7 @@ def lineshaping(row_number, items)
 end
 
 DISPLAY_ROW_NUMBER = 3
-dir_items = Dir.glob('*')
+dir_items = dirsearch
 items = fileshaping(dir_items)
 row_number = rowcalculation(items, DISPLAY_ROW_NUMBER)
 lineoutput(row_number, items)
