@@ -1,9 +1,25 @@
 # !/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
+
+def dirsearch
+  opt = OptionParser.new
+  params = {}
+  opt.on('-a') { |v| params[:a] = v }
+
+  opt.parse!(ARGV)
+  if params[:a]
+    Dir.glob('**/*', File::FNM_DOTMATCH)
+  else
+    Dir.glob('*')
+  end
+end
+
 def rowcalculation(items, display_row_number)
   row_number = items.length / display_row_number
-  row_number + 1 unless (items.length % display_row_number).zero?
+  row_number += 1 unless (items.length % display_row_number).zero?
+  row_number
 end
 
 def fileshaping(dir_items)
@@ -20,6 +36,7 @@ end
 
 def lineshaping(row_number, items)
   ascending_items = items.sort
+
   items_cut = ascending_items.each_slice(row_number).to_a
   items_cut.each do |item_cut|
     item_cut << '' while item_cut.size < row_number
@@ -28,7 +45,8 @@ def lineshaping(row_number, items)
 end
 
 DISPLAY_ROW_NUMBER = 3
-dir_items = Dir.glob('*')
+dir_items = dirsearch
 items = fileshaping(dir_items)
+
 row_number = rowcalculation(items, DISPLAY_ROW_NUMBER)
 lineoutput(row_number, items)
