@@ -7,10 +7,13 @@ def dirsearch
   opt = OptionParser.new
   params = {}
   opt.on('-a') { |v| params[:a] = v }
+  opt.on('-r') { |v| params[:r] = v }
 
   opt.parse!(ARGV)
   if params[:a]
     Dir.glob('**/*', File::FNM_DOTMATCH)
+  elsif params[:r]
+    Dir.glob('*').reverse
   else
     Dir.glob('*')
   end
@@ -35,9 +38,7 @@ def lineoutput(row_number, items)
 end
 
 def lineshaping(row_number, items)
-  ascending_items = items.sort
-
-  items_cut = ascending_items.each_slice(row_number).to_a
+  items_cut = items.each_slice(row_number).to_a
   items_cut.each do |item_cut|
     item_cut << '' while item_cut.size < row_number
   end
@@ -47,6 +48,5 @@ end
 DISPLAY_ROW_NUMBER = 3
 dir_items = dirsearch
 items = fileshaping(dir_items)
-
 row_number = rowcalculation(items, DISPLAY_ROW_NUMBER)
 lineoutput(row_number, items)
